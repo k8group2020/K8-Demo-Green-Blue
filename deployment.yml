@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: DemoK8
-        image: gcr.io/${{ secrets.GKE_PROJECT }}/harsittheking001/docker-spring-k8-demo:1.0-SNAPSHOT
+        image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 8087
         resources:
