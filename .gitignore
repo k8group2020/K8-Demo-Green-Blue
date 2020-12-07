@@ -32,3 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 .settings
+
+### System files###
+.DS_Store
+.DS_Store?
