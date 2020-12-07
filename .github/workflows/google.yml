@@ -23,7 +23,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: blue-green    # TODO: update to cluster name
   GKE_ZONE: us-central1-c   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: DemoK8 # TODO: update to deployment name
+  DEPLOYMENT_NAME: demok8 # TODO: update to deployment name
   IMAGE: static-site
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
