@@ -43,7 +43,7 @@ spec:
              path: /actuator/health
              port: 8087
           failureThreshold: 6
-          initialDelaySeconds: 120
+          initialDelaySeconds: 15
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 1
@@ -52,7 +52,7 @@ spec:
             path: /
             port: 8087
           failureThreshold: 6
-          initialDelaySeconds: 120
+          initialDelaySeconds: 15
           periodSeconds: 30
           successThreshold: 1
           timeoutSeconds: 1
