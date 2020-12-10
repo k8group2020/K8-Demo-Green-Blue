@@ -23,5 +23,11 @@ public class DemoProjApplication {
 	public String returnAMessage(HttpServletRequest request) {
 		return "Hi there! I'm a microservice powered by Java";
 	}
+	
+	@GetMapping("/version")
+	public String returnVersion() {
+		String version = System.getenv("K8APPVERSION");
+		return "Deployed version:"+version;
+	}
 
 }
