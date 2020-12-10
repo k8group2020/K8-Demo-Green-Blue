@@ -26,6 +26,7 @@ env:
   DEPLOYMENT_NAME: demok8 # TODO: update to deployment name
   IMAGE: static-site
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+  K8APPVERSION: 0.0.1  
 
 jobs:
   setup-build-publish-deploy:
