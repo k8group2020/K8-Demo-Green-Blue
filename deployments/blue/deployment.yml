@@ -15,29 +15,44 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demok8
+  name: demoK8-blue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demok8
+      app: demoK8-v2
+      track: blue
   strategy:
     rollingUpdate:
       maxSurge: 1
-      maxUnavailable: 1
+      maxUnavailable: 0
   minReadySeconds: 5
   template:
     metadata:
       labels:
-        app: demok8
+        app: demoK8-v2
+        track: blue
     spec:
       containers:
-      - name: demok8
+      - name: demoK8
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 8087
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
+        readinessProbe:
+          httpGet:
+             path: /actuator/health
+             port: 8087
+          failureThreshold: 6
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8087
+          failureThreshold: 6
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1        
