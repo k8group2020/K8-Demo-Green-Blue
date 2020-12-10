@@ -55,9 +55,4 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 30
           successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
+          timeoutSeconds: 1       
