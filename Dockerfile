@@ -29,7 +29,7 @@ COPY --from=MAVEN_BUILD /app/app.jar ./app.jar
 
 # set the startup command to run your binary
 CMD ["java", "-jar", "/app/app.jar"]
-
+ENV APP_VERSION $APP_VERSION
 #Exposing the port
 EXPOSE 8087
 #https://codefresh.io/docker-tutorial/create-docker-images-for-java/
