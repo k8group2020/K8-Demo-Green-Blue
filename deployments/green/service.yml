@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: demoK8-service
+  name: demok8-service
 spec:
   type: LoadBalancer
   ports:
     - port: 80
       targetPort: 8087
   selector:
-    app: demoK8-v1
+    app: demok8-v1

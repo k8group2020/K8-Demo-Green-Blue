@@ -15,12 +15,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demoK8-blue
+  name: demok8-blue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demoK8-v2
+      app: demok8-v2
       track: blue
   strategy:
     rollingUpdate:
@@ -30,11 +30,11 @@ spec:
   template:
     metadata:
       labels:
-        app: demoK8-v2
+        app: demok8-v2
         track: blue
     spec:
       containers:
-      - name: demoK8
+      - name: demok8
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 8087
