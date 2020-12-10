@@ -14,6 +14,9 @@ COPY ./src ./src
 # build for release
 # NOTE: my-project-* should be replaced with the proper prefix
 RUN mvn package && cp target/demoProj-*.jar app.jar
+
+# environment used for tests
+ARG K8APPVERSION
  
 # the second stage of our build will use open jdk 8 on alpine 3.9
 FROM openjdk:8-jre-alpine3.9
