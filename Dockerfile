@@ -26,8 +26,8 @@ ARG K8APPVERSION
 FROM openjdk:8-jre-alpine3.9
 
 #Set Env variables
-ENV DEPNAME=$DEPNAME
-ENV DEMOAPPVERSION=$DEMOAPPVERSION
+ENV DEPNAME $DEPNAME
+ENV DEMOAPPVERSION $DEMOAPPVERSION
 
 # OPTIONAL: copy dependencies so the thin jar won't need to re-download them
 COPY --from=MAVEN_BUILD /root/.m2 /root/.m2
