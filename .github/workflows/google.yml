@@ -24,7 +24,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: blue-green-canary    # TODO: update to cluster name
   GKE_ZONE: us-central1-c   # TODO: update to cluster zone
-  DEPLOYMENT_NAME: demok8 # TODO: update to deployment name
+  DEPLOYMENT_NAME: demok8-deployment # TODO: update to deployment name
   IMAGE: micro-app
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
   RELEASE: blue
@@ -52,7 +52,14 @@ jobs:
     # Get the GKE credentials so we can deploy to the cluster
     - run: |-
         gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
-
+    
+    # Identify branch and setup files to deploy
+    - name: Check for green branch and set RELEASE env variable
+      if: ${{contains(github.ref, 'green')}}
+      run: |-
+        echo "RELEASE=green" >> $GITHUB_ENV
+        echo "${RELEASE} release will be deployed"  
+    
     # Build the Docker image
     - name: Build
       run: |-
@@ -60,20 +67,14 @@ jobs:
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
-          --build-arg K8APPVERSION="$GITHUB_SHA" \
+          --build-arg DEMOAPPVERSION="$GITHUB_SHA" \
+          --build-arg DEPNAME="$RELEASE" \
           .
 
     # Push the Docker image to Google Container Registry
     - name: Publish
       run: |-
-        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
-
-    # Identify branch and setup files to deploy
-    - name: Check for green branch and set RELEASE env variable
-      if: ${{contains(github.ref, 'green')}}
-      run: |-
-        echo "RELEASE=green" >> $GITHUB_ENV
-        echo "${RELEASE} release will be deployed"     
+        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"   
 
     # Set up kustomize
     - name: Set up Kustomize

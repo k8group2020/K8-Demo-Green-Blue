@@ -10,11 +10,17 @@ public class VersionController {
     
     @GetMapping({"/version", "/version.html"})
     public Version index(){
-        String versionString = System.getenv("");
-        versionString = versionString == null ? "0.0.1" : versionString;
+        String versionString = System.getenv("DEMOAPPVERSION");
+        String deploymentName = System.getenv("DEPNAME");
         
+        versionString = versionString == null ? "0.0.1" : versionString;
+        deploymentName = deploymentName == null ? "N/A Check ENV" : deploymentName;
+        
+        //Create an obj and set the values
         Version version = new Version();
         version.setVersion(versionString);
+        version.setDeploymentName(deploymentName);
+        
         return version;
     }
 
