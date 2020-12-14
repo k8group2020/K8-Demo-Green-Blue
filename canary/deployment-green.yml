@@ -18,7 +18,7 @@ kind: Deployment
 metadata:
   name: demok8-deployment-green
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: demok8-green-v1
