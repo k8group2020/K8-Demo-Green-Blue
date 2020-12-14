@@ -8,6 +8,10 @@ public class Version {
     public Version() {
     }
     
+    public Version(String version) {
+        this.version = version;
+    }
+    
     public Version(String version, String deploymentName) {
         this.version = version;
         this.deploymentName = deploymentName;
