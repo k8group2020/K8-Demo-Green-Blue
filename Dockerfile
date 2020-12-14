@@ -1,6 +1,10 @@
 # the first stage of our build will use a maven 3.6.1 parent image
 FROM maven:3.6.1-jdk-8-alpine AS MAVEN_BUILD
- 
+
+#Args
+ARG DEPNAME
+ARG DEMOAPPVERSION
+
 WORKDIR /app
 
 COPY ./pom.xml ./pom.xml
@@ -20,6 +24,10 @@ ARG K8APPVERSION
  
 # the second stage of our build will use open jdk 8 on alpine 3.9
 FROM openjdk:8-jre-alpine3.9
+
+#Set Env variables
+ENV DEPNAME=$DEPNAME
+ENV DEMOAPPVERSION=$DEMOAPPVERSION
 
 # OPTIONAL: copy dependencies so the thin jar won't need to re-download them
 COPY --from=MAVEN_BUILD /root/.m2 /root/.m2
