@@ -1,4 +1,3 @@
-
 # Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +15,12 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demok8-blue
+  name: demok8-deployment-blue
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: demok8-v2
+      app: demok8-blue-v2
       track: blue
   strategy:
     rollingUpdate:
@@ -31,11 +30,11 @@ spec:
   template:
     metadata:
       labels:
-        app: demok8-v2
+        app: demok8-blue-v2
         track: blue
     spec:
       containers:
-      - name: demok8
+      - name: demok8-blue-pod
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 8087
