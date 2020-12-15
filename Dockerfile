@@ -39,4 +39,4 @@ CMD ["java", "-jar", "/app/app.jar"]
 ENV K8APPVERSION $APP_VERSION
 
 #Exposing the port
-EXPOSE 8087
+EXPOSE 8080
