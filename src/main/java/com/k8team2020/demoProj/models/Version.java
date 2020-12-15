@@ -3,7 +3,7 @@ package com.k8team2020.demoProj.models;
 public class Version {
 
     private String version;
-    private String deploymentName;
+    private String release;
     
     public Version() {
     }
@@ -12,25 +12,25 @@ public class Version {
         this.version = version;
     }
     
-    public Version(String version, String deploymentName) {
+    public Version(String version, String release) {
         this.version = version;
-        this.deploymentName = deploymentName;
+        this.release = release;
     }
     
     public String getVersion() {
         return version;
     }
     
-    public String getDeploymentName(){
-        return deploymentName;
+    public String getRelease(){
+        return release;
     }
 
     public void setVersion(String version) {
         this.version = version;
     }
     
-    public void setDeploymentName(String deploymentName){
-        this.deploymentName = deploymentName;
+    public void setRelease(String release){
+        this.release = release;
     }
     
 }
