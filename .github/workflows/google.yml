@@ -25,8 +25,6 @@ env:
   RELEASE: blue
   IS_GREEN_DEPLOYED: 'true'
   BIN_FOLDER: ./bin
-  BUILD_INFO: ""
-  APP_VERSION: ""
 
 jobs:
   setup-build-publish-deploy:
@@ -58,8 +56,6 @@ jobs:
         # Strip git ref prefix from version
         
         # Reset app_version and build_info
-        APP_VERSION=""
-        BUILD_INFO=""
         
         APP_VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
@@ -69,65 +65,67 @@ jobs:
         BUILD_INFO=$(echo $GITHUB_SHA | cut -c 37-40)
         
         APP_VERSION="$APP_VERSION+build.$BUILD_INFO"
+        echo ${BUILD_INFO}
+        echo ${APP_VERSION}
         
-        docker build \
-          --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
-          --build-arg GITHUB_SHA="$GITHUB_SHA" \
-          --build-arg GITHUB_REF="$GITHUB_REF" \
-          --build-arg APP_VERSION="$APP_VERSION" \
-          .
+#         docker build \
+#           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+#           --build-arg GITHUB_SHA="$GITHUB_SHA" \
+#           --build-arg GITHUB_REF="$GITHUB_REF" \
+#           --build-arg APP_VERSION="$APP_VERSION" \
+#           .
 
-    # Push the Docker image to Google Container Registry
-    - name: Publish
-      run: |-
-        docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
+#     # Push the Docker image to Google Container Registry
+#     - name: Publish
+#       run: |-
+#         docker push "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA"
     
-    # Identify branch and setup files to deploy
-    - name: Check for green branch and set RELEASE env variable
-      if: ${{ contains(github.ref, 'stable') }}
-      run: |-
-        echo "RELEASE=green" >> $GITHUB_ENV
-        echo "${RELEASE} release will be deployed"
+#     # Identify branch and setup files to deploy
+#     - name: Check for green branch and set RELEASE env variable
+#       if: ${{ contains(github.ref, 'stable') }}
+#       run: |-
+#         echo "RELEASE=green" >> $GITHUB_ENV
+#         echo "${RELEASE} release will be deployed"
       
-    # Set up kustomize
-    - name: Set up Kustomize
-      working-directory: ./bin/
-      run: |-
-        echo "BIN_FOLDER=$(pwd)" >> $GITHUB_ENV
-        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
-        chmod u+x ./kustomize
+#     # Set up kustomize
+#     - name: Set up Kustomize
+#       working-directory: ./bin/
+#       run: |-
+#         echo "BIN_FOLDER=$(pwd)" >> $GITHUB_ENV
+#         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+#         chmod u+x ./kustomize
   
-    # Deploy the Docker image to the GKE cluster
-    - name: Deploy
-      working-directory: ./deployments/canary/overlays/release/
-      run: |-
-        cd ./${RELEASE}/ 
-        echo "Switched to `pwd` directory"
-        ${BIN_FOLDER}/./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
-        ${BIN_FOLDER}/./kustomize build . | kubectl apply -f -
-        kubectl rollout status deployment/$DEPLOYMENT_NAME-$RELEASE
-        kubectl get services -o wide
+#     # Deploy the Docker image to the GKE cluster
+#     - name: Deploy
+#       working-directory: ./deployments/canary/overlays/release/
+#       run: |-
+#         cd ./${RELEASE}/ 
+#         echo "Switched to `pwd` directory"
+#         ${BIN_FOLDER}/./kustomize edit set image gcr.io/PROJECT_ID/IMAGE:TAG=gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA
+#         ${BIN_FOLDER}/./kustomize build . | kubectl apply -f -
+#         kubectl rollout status deployment/$DEPLOYMENT_NAME-$RELEASE
+#         kubectl get services -o wide
     
-    # Check if green deployment has been rolled out even once and assign IS_GREEN_DEPLOYED true/false
-    # If false means that blue needs to take 100% of the traffic
-    - name: Check if green release is present or not
-      run: echo "IS_GREEN_DEPLOYED=$(if [ "$(kubectl get pod -l app=micro-app -l release=stable -o jsonpath='{.items}')" = "[]" ]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
+#     # Check if green deployment has been rolled out even once and assign IS_GREEN_DEPLOYED true/false
+#     # If false means that blue needs to take 100% of the traffic
+#     - name: Check if green release is present or not
+#       run: echo "IS_GREEN_DEPLOYED=$(if [ "$(kubectl get pod -l app=micro-app -l release=stable -o jsonpath='{.items}')" = "[]" ]; then echo "false"; else echo "true"; fi)" >> $GITHUB_ENV
 
-    # Switch traffic for no green release 
-    - name: Create blue release and modify traffic weight to 100% for blue if IS_GREEN_DEPLOYED=false
-      if: ${{ env.RELEASE == 'blue' && env.IS_GREEN_DEPLOYED == 'false' }}
-      working-directory: ./deployments/canary/overlays/traffic/blue/
-      run: |-
-        echo "Switched to `pwd` directory"
-        ${BIN_FOLDER}/./kustomize build . | sed 's/weight: 20/weight: 100/' | sed 's/weight: 80/weight: 0/' | kubectl apply -f -
-        echo "Switched 100% of traffic to blue" 
+#     # Switch traffic for no green release 
+#     - name: Create blue release and modify traffic weight to 100% for blue if IS_GREEN_DEPLOYED=false
+#       if: ${{ env.RELEASE == 'blue' && env.IS_GREEN_DEPLOYED == 'false' }}
+#       working-directory: ./deployments/canary/overlays/traffic/blue/
+#       run: |-
+#         echo "Switched to `pwd` directory"
+#         ${BIN_FOLDER}/./kustomize build . | sed 's/weight: 20/weight: 100/' | sed 's/weight: 80/weight: 0/' | kubectl apply -f -
+#         echo "Switched 100% of traffic to blue" 
 
-    # Switch traffic for regular releases
-    - name: Create blue/green release and modify traffic weight
-      if: ${{ env.IS_GREEN_DEPLOYED == 'true' }}
-      working-directory: ./deployments/canary/overlays/traffic/
-      run: |-
-        cd ./${RELEASE}/
-        echo "Switched to `pwd` directory"
-        ${BIN_FOLDER}/./kustomize build . | kubectl apply -f -
-        echo "Created service and Switched traffic"
+#     # Switch traffic for regular releases
+#     - name: Create blue/green release and modify traffic weight
+#       if: ${{ env.IS_GREEN_DEPLOYED == 'true' }}
+#       working-directory: ./deployments/canary/overlays/traffic/
+#       run: |-
+#         cd ./${RELEASE}/
+#         echo "Switched to `pwd` directory"
+#         ${BIN_FOLDER}/./kustomize build . | kubectl apply -f -
+#         echo "Created service and Switched traffic"
