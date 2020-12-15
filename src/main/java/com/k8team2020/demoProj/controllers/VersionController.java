@@ -11,15 +11,15 @@ public class VersionController {
     @GetMapping({"/version", "/version.html"})
     public Version index(){
         String versionString = System.getenv("K8APPVERSION");
-        String deploymentName = System.getenv("POD_RELEASE");
+        String releaseName = System.getenv("POD_RELEASE");
         
         versionString = versionString == null ? "0.0.1" : versionString;
-        deploymentName = deploymentName == null ? "BLUE" : deploymentName;
+        releaseName = releaseName == null ? "BLUE" : releaseName;
         
         //Create an obj and set the values
         Version version = new Version();
         version.setVersion(versionString);
-        version.setDeploymentName(deploymentName);
+        version.setRelease(releaseName);
         
         return version;
     }
