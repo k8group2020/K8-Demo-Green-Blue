@@ -25,6 +25,8 @@ env:
   RELEASE: blue
   IS_GREEN_DEPLOYED: 'true'
   BIN_FOLDER: ./bin
+  BUILD_INFO: ""
+  APP_VERSION: ""
 
 jobs:
   setup-build-publish-deploy:
@@ -54,6 +56,11 @@ jobs:
     - name: Build
       run: |-
         # Strip git ref prefix from version
+        
+        # Reset app_version and build_info
+        APP_VERSION=""
+        BUILD_INFO=""
+        
         APP_VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
         # Strip "v" prefix from tag name
@@ -101,8 +108,6 @@ jobs:
         kubectl rollout status deployment/$DEPLOYMENT_NAME-$RELEASE
         kubectl get services -o wide
     
-
-
     # Check if green deployment has been rolled out even once and assign IS_GREEN_DEPLOYED true/false
     # If false means that blue needs to take 100% of the traffic
     - name: Check if green release is present or not
