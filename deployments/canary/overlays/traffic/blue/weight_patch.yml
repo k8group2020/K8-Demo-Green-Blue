@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: gke-microapp-pod-virtualservice-canary
+spec:
+  http:
+    - route:
+        - destination:
+            port:
+              number: 8080
+            host: gke-microapp-pod-service-canary
+            subset: green
+          weight: 80
+        - destination:
+            port:
+              number: 8080
+            host: gke-microapp-pod-service-canary
+            subset: blue
+          weight: 20

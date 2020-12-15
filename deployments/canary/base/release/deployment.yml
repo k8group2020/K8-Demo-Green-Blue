@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gke-microapp-canary-deploy
+spec:
+  selector:
+    matchLabels:
+      app: gke-micro-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 10
+  template:
+    metadata:
+      labels:
+        app: gke-micro-app
+    spec:
+      containers:
+      - name: gke-microapp-container
+        image: gcr.io/PROJECT_ID/IMAGE:TAG
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+             path: /actuator/health
+             port: 8080
+          failureThreshold: 6
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          failureThreshold: 6
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1

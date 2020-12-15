@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gke-microapp-canary-deploy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gke-micro-app
+      release: edge
+  template:
+    metadata:
+      labels:
+        app: gke-micro-app
+        release: edge
+    spec:
+      containers:
+      - name: gke-microapp-container
+        env:
+          - name: "POD_RELEASE"
+            value: "BLUE" 
