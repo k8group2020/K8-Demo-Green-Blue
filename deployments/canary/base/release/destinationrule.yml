@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: gke-microapp-canary-rule
+spec:
+  host: gke-microapp-pod-service-canary
+  subsets:
+  - name: blue
+    labels:
+      release: edge
+  - name: green
+    labels:
+      release: stable

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../../base/release
+patches:
+  - target:
+      kind: Deployment
+      name: gke-microapp-canary-deploy
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: gke-microapp-canary-deploy-blue
+  - path: ./release_patch.yml

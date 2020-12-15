@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gke-microapp-pod-service-canary
+spec:
+  selector:
+    app: gke-micro-app
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: NodePort
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: gke-microapp-pod-virtualservice-canary
+spec:
+  http:
+    - route:
+        - destination:
+            host: gke-microapp-pod-service-canary
+            subset: green
+        - destination:
+            host: gke-microapp-pod-service-canary
+            subset: blue
+        
+  gateways:
+    - gke-microapp-pod-gateway
+  hosts:
+    - "*"
