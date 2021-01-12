@@ -1,7 +1,6 @@
-# Nothing to see here , placeholder for now
-# kubectl delete deployments gke-pet-clinic-canary-deploy-green gke-pet-clinic-canary-deploy-blue 
-# kubectl delete services gke-pet-clinic-pod-service-canary
-# kubectl delete gateway gke-pet-clinic-pod-gateway
-# kubectl delete destinationrule gke-pet-clinic-canary-rule
-# kubectl delete virtualservice gke-pet-clinic-pod-virtualservice-canary
-# kubectl delete virtualservice gke-pet-clinic-pod-service-canary
+kubectl delete deployments gke-microapp-canary-deploy-blue gke-microapp-canary-deploy-green
+kubectl delete services gke-microapp-service
+kubectl delete gateway gke-microapp-pod-gateway
+kubectl delete destinationrule gke-microapp-canary-rule
+kubectl delete virtualservice gke-microapp-pod-virtualservice-canary
+kubectl delete virtualservice gke-microapp-pod-service-canary
