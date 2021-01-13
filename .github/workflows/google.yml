@@ -63,7 +63,7 @@ jobs:
         
         BUILD_INFO=$(echo $GITHUB_SHA | cut -c 37-40)
         
-        APP_VERSION="$APP_VERSION+build.$BUILD_INFO"
+        APP_VERSION="$APP_VERSION-build.$BUILD_INFO"
         echo "APP_VERSION=$APP_VERSION" >> $GITHUB_ENV
         
         docker build \
