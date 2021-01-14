@@ -32,9 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 .settings
+.theia/
 
 ### System files###
 .DS_Store
 .DS_Store?
-.theia/
 kustomize
