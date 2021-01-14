@@ -8,7 +8,7 @@ public class IndexController {
     
     @GetMapping({"/", "index.html"})
     public String index(){
-        return "Micro app service is ready for you. Greetings, if you are seeing this, you are on a newer version";
+        return "Micro app service is ready for you. Greetings,user. if you are seeing this, you are on a newer version";
     }
 
 }
